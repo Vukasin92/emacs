@@ -1,0 +1,18 @@
+
+;; ----- smex-history -----
+(
+ revert-buffer
+ load-file
+ paredit-mode
+ cd
+ 5x5
+ arp
+ dbx
+)
+
+;; ----- smex-data -----
+(
+ (load-file . 11)
+ (revert-buffer . 3)
+ (paredit-mode . 1)
+)
