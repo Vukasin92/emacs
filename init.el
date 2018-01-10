@@ -9,6 +9,7 @@
 
 (menu-bar-mode 0)
 (tool-bar-mode 0)
+(global-linum-mode 1)
 (global-hl-line-mode +1)
 
 (setq-default indent-tabs-mode nil)
@@ -22,7 +23,8 @@
 (use-package whitespace
   :init
   (dolist (hook '(prog-mode-hook text-mode-hook))
-    (add-hook hook 'whitespace-mode))
+    ;;(add-hook hook 'whitespace-mode)
+    )
   (add-hook 'before-save-hook 'whitespace-cleanup)
   :config
   (setq whitespace-line-column 150) ;; limit line length
@@ -149,7 +151,7 @@
  '(org-agenda-files (quote ("e:/org/waflandwidb.org" "e:/org/list.org")))
  '(package-selected-packages
    (quote
-    (ido-occur projectile-variable pt bm ## ace-window hydra neotree flx-ido ido-completing-read+ paredit smex tabbar use-package omnisharp helm-projectile projectile projectile-codesearch google-maps google-this google-translate multiple-cursors sql-indent yasnippet tfs sr-speedbar spotify monokai-theme helm-youtube helm-xref helm-spotify-plus helm-spotify helm-rtags helm-gtags helm-flyspell helm-flymake helm-flycheck helm-firefox helm-etags-plus helm-cscope helm-codesearch gxref ggtags flymake-cppcheck flycheck-elm f3 etags-table elm-mode dash-functional csharp-mode company ac-etags)))
+    (rpn-calc hideshowvis origami indent-guide ido-occur projectile-variable pt bm ## ace-window hydra neotree flx-ido ido-completing-read+ paredit smex tabbar use-package omnisharp helm-projectile projectile projectile-codesearch google-maps google-this google-translate multiple-cursors sql-indent yasnippet tfs sr-speedbar spotify monokai-theme helm-youtube helm-xref helm-spotify-plus helm-spotify helm-rtags helm-gtags helm-flyspell helm-flymake helm-flycheck helm-firefox helm-etags-plus helm-cscope helm-codesearch gxref ggtags flymake-cppcheck flycheck-elm f3 etags-table elm-mode dash-functional csharp-mode company ac-etags)))
  '(projectile-mode t nil (projectile))
  '(recentf-mode t))
 (custom-set-faces
