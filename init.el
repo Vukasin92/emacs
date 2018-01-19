@@ -11,6 +11,8 @@
 (tool-bar-mode 0)
 (global-linum-mode 1)
 (global-hl-line-mode +1)
+(line-number-mode t)
+(column-number-mode t)
 
 (setq-default indent-tabs-mode nil)
 
@@ -22,13 +24,20 @@
 
 (use-package whitespace
   :init
-  (dolist (hook '(prog-mode-hook text-mode-hook))
-    ;;(add-hook hook 'whitespace-mode)
-    )
-  (add-hook 'before-save-hook 'whitespace-cleanup)
+  (dolist
+      (hook '(prog-mode-hook text-mode-hook))
+    (add-hook hook 'whitespace-mode)
+    (add-hook 'before-save-hook 'whitespace-cleanup)
+  )
   :config
-  (setq whitespace-line-column 150) ;; limit line length
-)
+  (setq whitespace-line-column 150)
+  (setq whitespace-style '(whitespace face tabs empty trailing)))
+;; limit line length
+
+  (use-package angular-mode
+    :config
+    (setq auto-mode-alist (append '(("\\.ts$" . angular-mode))
+                                  auto-mode-alist)))
 
 (use-package projectile
   :init
@@ -37,10 +46,12 @@
   ("C-; f" . projectile-find-file)
   ("C-; ." . projectile-pt))
 
-(use-package omnisharp
-  :config
-  (setq omnisharp-server-executable-path "E:\\omnisharp-win-x64\\OmniSharp.exe")
-  (add-hook 'csharp-mode-hook 'omnisharp-mode))
+;; Omnisharp is slowing me down - stop it
+;;(use-package omnisharp
+  ;;  :config
+  ;;  (setq omnisharp-server-executable-path "E:\\omnisharp-win-x64\\OmniSharp.exe")
+  ;;  (add-hook 'csharp-mode-hook 'omnisharp-mode)
+;;  )
 
 (use-package paredit
   :diminish paredit-mode
@@ -52,15 +63,27 @@
   (add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)
   (add-hook 'ielm-mode-hook 'enable-paredit-mode)
   (add-hook 'json-mode-hook 'enable-paredit-mode))
+
 (use-package neotree
   :init
   (setq neo-smart-open t
         neo-show-hidden-files t
         neo-autorefresh t)
+  :config
+  (defun copy-file-name-to-clipboard ()
+  "Copy the current buffer file name to the clipboard."
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      default-directory
+                    (buffer-file-name))))
+    (when filename
+      (kill-new filename)
+      (message "Copied buffer file name '%s' to the clipboard." filename))))
   :bind
   ("C-c C-q" . neotree-toggle)
   ("C-c r")
   ("C-q" . neotree-show)
+  ("C-c C-w" . copy-file-name-to-clipboard)
   (:map
    neotree-mode-map
    ("C-c C-w" . neotree-copy-filepath-to-yank-ring)))
@@ -106,9 +129,11 @@
   :requires ido)
 
 (use-package avy
-  :bind
-  ("M-g c" . avy-goto-char)
-  ("M-g w" . avy-goto-word-1))
+  :config
+  (bind-keys*
+   ("C-c C-c" . avy-goto-char)
+   ("C-c C-s" . avy-goto-word-1)))
+(use-package sql)
 
 (use-package bm
   :bind
@@ -140,20 +165,18 @@
   :config
   (load-theme 'monokai t))
 
+;; reduce the frequency of garbage collection by making it happen on
+;; each 50MB of allocated data (the default is on every 0.76MB)
+(setq gc-cons-threshold 50000000)
+;; disable the annoying bell ring
+(setq ring-bell-function 'ignore)
+(setq font-lock-maximum-decoration 2)
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("8ed752276957903a270c797c4ab52931199806ccd9f0c3bb77f6f4b9e71b9272" default)))
- '(org-agenda-files (quote ("e:/org/waflandwidb.org" "e:/org/list.org")))
- '(package-selected-packages
-   (quote
-    (rpn-calc hideshowvis origami indent-guide ido-occur projectile-variable pt bm ## ace-window hydra neotree flx-ido ido-completing-read+ paredit smex tabbar use-package omnisharp helm-projectile projectile projectile-codesearch google-maps google-this google-translate multiple-cursors sql-indent yasnippet tfs sr-speedbar spotify monokai-theme helm-youtube helm-xref helm-spotify-plus helm-spotify helm-rtags helm-gtags helm-flyspell helm-flymake helm-flycheck helm-firefox helm-etags-plus helm-cscope helm-codesearch gxref ggtags flymake-cppcheck flycheck-elm f3 etags-table elm-mode dash-functional csharp-mode company ac-etags)))
- '(projectile-mode t nil (projectile))
- '(recentf-mode t))
+ '(org-agenda-files (quote ("e:/org/list.org"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
