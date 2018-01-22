@@ -94,7 +94,12 @@
   :init
   (setq company-dabbrev-downcase 0)
   (setq company-idle-delay 0)
-  (company-mode 1))
+  (company-mode 1)
+  :bind (:map company-active-map
+              ("C-s" . company-select-next)
+              ("C-r" . company-select-previous)
+              ("C-c s" . company-search-candidates)
+              ("<tab>" . company-complete-selection)))
 
 (use-package recentf
   :config
@@ -107,7 +112,7 @@
   (:map ivy-minibuffer-map
    ("C-o" . hydra-ivy/body))
   :config
-  (setq ivy-use-virtual-buffers t)
+  (setq ido-use-virtual-buffers t)
   ;; swiper regular search
   ;; rest fuzzy match
   (setq ivy-re-builders-alist
@@ -118,8 +123,7 @@
 
 (use-package swiper
   :bind
-  ("C-s" . swiper)
-)
+  ("C-s" . swiper))
 
 (use-package counsel
   :ensure t
@@ -129,7 +133,7 @@
   ("C-x C-f" . counsel-find-file)
   ("C-c f" . counsel-describe-function)
   ("C-c v" . counsel-describe-variable)
-  ("C-c k" . counsel-ag))
+  ("C-c k" . counsel-pt))
 
 ;;
 ;; (use-package ido
