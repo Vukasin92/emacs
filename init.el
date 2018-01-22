@@ -53,6 +53,7 @@
   ;;  (add-hook 'csharp-mode-hook 'omnisharp-mode)
 ;;  )
 
+
 (use-package paredit
   :diminish paredit-mode
   :init
@@ -78,6 +79,7 @@
                     (buffer-file-name))))
     (when filename
       (kill-new filename)
+
       (message "Copied buffer file name '%s' to the clipboard." filename))))
   :bind
   ("C-c C-q" . neotree-toggle)
@@ -88,45 +90,79 @@
    neotree-mode-map
    ("C-c C-w" . neotree-copy-filepath-to-yank-ring)))
 
+(use-package company
+  :init
+  (setq company-dabbrev-downcase 0)
+  (setq company-idle-delay 0)
+  (company-mode 1))
+
 (use-package recentf
   :config
   (setq recentf-max-menu-items 50))
 
-(use-package ido
-  :init (ido-mode 1)
-  :requires recentf
-  :config
-  (defun ido-recentf-open ()
-    "Use `ido-completing-read' to find a recent file."
-    (interactive)
-    (if (find-file (ido-completing-read "Find recent file: " recentf-list))
-        (message "Opening file...")
-      (message "Aborting")))
-  (global-set-key (kbd "C-x C-r") 'ido-recentf-open)
-  (setq ido-enable-flex-matching t
-        ido-everywhere t
-        ido-use-virtual-buffers t)
-  :bind
-  ("C-x C-r" . ido-recentf-open))
-(use-package ido-completing-read+
-  :requires ido)
-(use-package ido-occur
-  :requires ido
-  :bind
-  ("C-s" . ido-occur))
-(use-package flx-ido
-  :init (flx-ido-mode 1)
-  :requires ido)
-(use-package ido-vertical-mode
+(use-package ivy
   :ensure t
-  :init
-  (ido-vertical-mode)
-  (setq ido-vertical-define-keys 'C-n-and-C-p-only))
+  :diminish ivy-mode
+  :bind
+  (:map ivy-minibuffer-map
+   ("C-o" . hydra-ivy/body))
+  :config
+  (setq ivy-use-virtual-buffers t)
+  ;; swiper regular search
+  ;; rest fuzzy match
+  (setq ivy-re-builders-alist
+        '((swiper . ivy--regex-plus)
+          (t      . ivy--regex-fuzzy)))
+  (ivy-mode 1)
+  (bind-key "C-c C-r" 'ivy-resume))
 
-(use-package smex
-  :init (smex-initialize)
-  :bind ("M-x" . smex)
-  :requires ido)
+(use-package swiper
+  :bind
+  ("C-s" . swiper)
+)
+
+(use-package counsel
+  :ensure t
+  :bind
+  ("M-x" . counsel-M-x)
+  ("C-x C-r" . counsel-recentf)
+  ("C-x C-f" . counsel-find-file)
+  ("C-c f" . counsel-describe-function)
+  ("C-c v" . counsel-describe-variable)
+  ("C-c k" . counsel-ag))
+
+;;
+;; (use-package ido
+;;   :init (ido-mode 1)
+;;   :requires recentfcounsel-facescounsel-recentf
+;;   :config
+;;   (defun ido-recentf-open ()
+;;     "Use `ido-completing-read' to find a recent file."
+;;     (interactive)
+;;     (if (find-file (ido-completing-read "Find recent file: " recentf-list))
+;;         (message "Opening file...")
+;;       (message "Aborting")))
+;;   (global-set-key (kbd "C-x C-r") 'ido-recentf-open)
+;;   (setq ido-enable-flex-matching t
+;;         ido-everywhere t
+;;         ido-use-virtual-buffers t)
+;;   :bind)
+;; ("C-x C-r" . ido-recentf-open)
+;; (use-package ido-completing-read+
+;;   :requires ido)
+;; (use-package ido-occur
+;;   :requires ido
+;;   :bind
+;;   ("C-s" . ido-occur))
+;; (use-package flx-ido
+;;   :init (flx-ido-mode 1)
+;;   :requires ido)
+;; (use-package ido-vertical-mode
+;;   :ensure t
+;;   :init
+;;   (ido-vertical-mode)
+;;   (setq ido-vertical-define-keys 'C-n-and-C-p-only))
+
 
 (use-package avy
   :config
@@ -176,7 +212,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-agenda-files (quote ("e:/org/list.org"))))
+ '(org-agenda-files (quote ("e:/org/list.org")))
+ '(package-selected-packages
+   (quote
+    (company ivy-hydra which-key use-package smex projectile paredit org-bullets org neotree monokai-theme kanban ido-vertical-mode ido-occur ido-completing-read+ hydra helm-cscope ggtags flx-ido counsel bm angular-mode ace-window))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
