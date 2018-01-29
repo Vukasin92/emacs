@@ -6,21 +6,67 @@
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-
+;; CONFIG - REGION
+;; BEGIN
 (menu-bar-mode 0)
 (tool-bar-mode 0)
-(global-linum-mode 1)
 (global-hl-line-mode +1)
+(setq size-indication-mode t)
 (line-number-mode t)
 (column-number-mode t)
-
+(setq inhibit-startup-screen t)
+;; replace yes/no questions with y/n
+(fset 'yes-or-no-p 'y-or-n-p)
+(fringe-mode '(1 . 1))
+;; delete the previous selection when overrides it with a new insertion.
+(delete-selection-mode)
+;; the blinking cursor is pretty annoying, so disable it.
+(blink-cursor-mode -1)
+ ;; make sure that UTF-8 is used everywhere.
+(set-terminal-coding-system  'utf-8)
+(set-keyboard-coding-system  'utf-8)
+(set-language-environment    'utf-8)
+(set-selection-coding-system 'utf-8)
+(setq locale-coding-system   'utf-8)
+(prefer-coding-system        'utf-8)
+(set-input-method nil)
 (setq-default indent-tabs-mode nil)
+;; disable auto save and backups
+(setq auto-save-default nil
+      auto-save-list-file-prefix nil
+      make-backup-files nil)
+(setq show-paren-delay 0)
+(show-paren-mode t)
+
+(defvar avax-temporal-directory (concat user-emacs-directory "tmp/"))
+(unless (file-exists-p avax-temporal-directory)
+  (make-directory avax-temporal-directory))
+;; END
+;; CONFIG REGION
+
 
 ;; This is only needed once, near the top of the file
 (eval-when-compile
   ;; Following line is not needed if use-package.el is in ~/.emacs.d
   (add-to-list 'load-path "~/.emacs.d/elpa/use-package-20171226.1104/")
   (require 'use-package))
+
+;; PACKAGE - REGION
+;; BEGIN
+
+(use-package saveplace
+  :ensure t
+  :config
+  (progn
+    (setq save-place-file (concat avax-temporal-directory "saveplace.el"))
+    (setq-default save-place t)))
+
+(use-package async
+  :defer t
+  :ensure t
+  :config
+  (setq async-bytecomp-package-mode t))
+
 
 (use-package whitespace
   :init
@@ -44,7 +90,13 @@
   (add-hook 'prog-mode-hook 'projectile-mode)
   :bind
   ("C-; f" . projectile-find-file)
-  ("C-; ." . projectile-pt))
+  ("C-; ." . projectile-pt)
+  :config
+   (progn
+    (setq projectile-cache-file (concat avax-temporal-directory "projectile.cache"))
+    (setq projectile-known-projects-file (concat avax-temporal-directory "projectile-bookmarks.eld"))
+    (setq projectile-enable-caching t)
+    (projectile-global-mode)))
 
 ;; Omnisharp is slowing me down - stop it
 ;;(use-package omnisharp
@@ -105,6 +157,8 @@
   :config
   (setq recentf-max-menu-items 50))
 
+
+
 (use-package ivy
   :ensure t
   :diminish ivy-mode
@@ -121,7 +175,11 @@
   (ivy-mode 1)
   (bind-key "C-c C-r" 'ivy-resume))
 
-(use-package swiper
+(use-package ivy-youtube
+  :config
+  (setq ivy-youtube-key "AIzaSyAImU5C1EDDVaQM8UuM0vncADez8XH1Gwg"))
+
+(Use-package swiper
   :bind
   ("C-s" . swiper))
 
@@ -226,3 +284,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+
+;;NOTES
+;; DESIRED PACKAGES - QUICK RUN
